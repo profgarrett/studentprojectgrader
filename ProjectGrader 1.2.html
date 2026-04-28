@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Grader</title>
+    
+    <!-- CSS Section -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .rubric-checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 6px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .rubric-checkbox-item:hover {
+            background: #e9ecef;
+        }
+
+        .rubric-checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .rubric-checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+            flex: 1;
+        }
+
+        .rubric-impact {
+            color: #667eea;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .table-section {
+            margin-top: 15px;
+        }
+
+        .table-section h2 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.3s;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            color: #555;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML Section -->
+    <div class="container">
+
+        <div class="content">
+
+            <!-- Rubric Items Section -->
+            <div class="form-section">
+                <h2 id="rubricFormTitle">Add/Edit Rubric Item</h2>
+                <form id="rubricForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="rubricDescription">Description</label>
+                            <input type="text" id="rubricDescription" placeholder="e.g., Code Quality" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gradeImpact">Grade Impact (points)</label>
+                            <input type="number" id="gradeImpact" step="0.1" placeholder="e.g., 10" required>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary" id="submitRubricBtn">Add Rubric Item</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetRubricForm()">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Rubric Items Table -->
+            <div class="table-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Rubric Items</h2>
+                    <button type="button" class="btn btn-danger" onclick="clearAllRubricItems()">Clear All Rubric Items</button>
+                </div>
+                <table id="rubricTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Grade Impact</th>
+                            <th>Usage</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rubricTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">No rubric items added yet. Add your first rubric item above!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2 id="formTitle">Add/Edit Student</h2>
+                <form id="projectForm">
+                    <div class="form-group">
+                        <label for="studentName">Student Name/ID</label>
+                        <input type="text" id="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <input type="text" id="comments" placeholder="Optional feedback">
+                    </div>
+                    <div class="form-group" id="rubricItemsCheckboxes" style="display: none;">
+                        <label style="margin-bottom: 10px; display: block;">Applied Rubric Items</label>
+                        <div id="rubricCheckboxContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; background: white; padding: 15px; border: 2px solid #ddd; border-radius: 6px;">
+                            <!-- Checkboxes will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Add Student</button>
+                        <button type="button" class="btn btn-primary" id="saveNextBtn" style="display: none;" onclick="saveAndNext()">Save & Next</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Students</h2>
+                    <button type="button" class="btn btn-danger" onclick="clearLocalStorage()">Clear All Data</button>
+                </div>
+                <table id="projectsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student Name</th>
+                            <th>Grade</th>
+                            <th>Comments & Rubric Items</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">No students added yet. Add your first student above!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bulk Import Section -->
+            <div class="form-section">
+                <h2>Bulk Import Students</h2>
+                <div class="form-group">
+                    <label for="studentIds">Student IDs (one per line)</label>
+                    <textarea id="studentIds" rows="8" placeholder="Enter student IDs, one per line&#10;e.g.&#10;STU001&#10;STU002&#10;STU003" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; font-family: monospace; resize: vertical;"></textarea>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="bulkImportStudents()">Import Students</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearBulkImport()">Clear</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- JavaScript Section -->
+    <script>
+        // In-memory data store - Array of project objects
+        let projects = [];
+        let editingIndex = -1; // Track if we're editing an existing project
+        const STORAGE_KEY = 'projectGraderData'; // Key for localStorage
+
+        // In-memory data store - Array of rubric item objects
+        let rubricItems = [];
+        let editingRubricIndex = -1; // Track if we're editing an existing rubric item
+        const RUBRIC_STORAGE_KEY = 'projectGraderRubricItems'; // Key for localStorage
+
+        // Initialize with sample data (optional)
+        function initializeSampleData() {
+            projects = [
+                {
+                    id: 1,
+                    studentName: "Alice Johnson",
+                    comments: "Excellent work!",
+                    appliedRubricItems: [] // Array of rubric item IDs
+                },
+                {
+                    id: 2,
+                    studentName: "Bob Smith",
+                    comments: "Good implementation",
+                    appliedRubricItems: []
+                },
+                {
+                    id: 3,
+                    studentName: "Carol White",
+                    comments: "Working on features",
+                    appliedRubricItems: []
+                }
+            ];
+            syncTableWithData();
+        }
+
+        // Save projects to localStorage
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+                console.log('Data saved to localStorage:', projects.length, 'projects');
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                alert('Failed to save data to local storage. Your browser may have storage disabled or full.');
+            }
+        }
+
+        // Load projects from localStorage
+        function loadFromLocalStorage() {
+            try {
+                const storedData = localStorage.getItem(STORAGE_KEY);
+                if (storedData) {
+                    projects = JSON.parse(storedData);
+                    console.log('Data loaded from localStorage:', projects.length, 'projects');
+                    return true;
+                }
+                console.log('No data found in localStorage');
+                return false;
+            } catch (error) {
+                console.error('Error loading from localStorage:', error);
+                alert('Failed to load data from local storage. Data may be corrupted.');
+                return false;
+            }
+        }
+
+        // Clear localStorage
+        function clearLocalStorage() {
+            if (confirm('Are you sure you want to clear ALL data? This action cannot be undone!')) {
+                if (confirm('This will permanently delete all ' + projects.length + ' project(s) and ' + rubricItems.length + ' rubric item(s). Continue?')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(RUBRIC_STORAGE_KEY);
+                    projects = [];
+                    rubricItems = [];
+                    syncTableWithData();
+                    syncRubricTableWithData();
+                    alert('All data has been cleared from local storage.');
+                    console.log('localStorage cleared');
+                }
+            }
+        }
+
+        // Save rubric items to localStorage
+        function saveRubricToLocalStorage() {
+            try {
+                localStorage.setItem(RUBRIC_STORAGE_KEY, JSON.stringify(rubricItems));
+                console.log('Rubric data saved to localStorage:', rubricItems.length, 'items');
+            } catch (error) {
+                console.error('Error saving rubric to localStorage:', error);
+                alert('Failed to save rubric data to local storage. Your browser may have storage disabled or full.');
+            }
+        }
+
+        // Load rubric items from localStorage
+        function loadRubricFromLocalStorage() {
+            try {
+                const storedData = localStorage.getItem(RUBRIC_STORAGE_KEY);
+                if (storedData) {
+                    rubricItems = JSON.parse(storedData);
+                    console.log('Rubric data loaded from localStorage:', rubricItems.length, 'items');
+                    return true;
+                }
+                console.log('No rubric data found in localStorage');
+                return false;
+            } catch (error) {
+                console.error('Error loading rubric from localStorage:', error);
+                alert('Failed to load rubric data from local storage. Data may be corrupted.');
+                return false;
+            }
+        }
+
+        // Generate unique ID for rubric items
+        function generateRubricId() {
+            return rubricItems.length > 0 ? Math.max(...rubricItems.map(r => r.id)) + 1 : 1;
+        }
+
+        // Sync rubric table with the rubricItems array
+        function syncRubricTableWithData() {
+            const tableBody = document.getElementById('rubricTableBody');
+            
+            if (!tableBody) return; // Table not yet created
+            
+            // Clear existing rows
+            tableBody.innerHTML = '';
+            
+            // If no rubric items, show empty state
+            if (rubricItems.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">No rubric items added yet. Add your first rubric item above!</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Calculate usage count for each rubric item
+            const usageCounts = {};
+            rubricItems.forEach(item => {
+                usageCounts[item.id] = 0;
+            });
+            
+            // Count how many times each rubric item is used across all projects
+            projects.forEach(project => {
+                if (project.appliedRubricItems && Array.isArray(project.appliedRubricItems)) {
+                    project.appliedRubricItems.forEach(rubricId => {
+                        if (usageCounts.hasOwnProperty(rubricId)) {
+                            usageCounts[rubricId]++;
+                        }
+                    });
+                }
+            });
+            
+            // Sort rubric items by description
+            const sortedItems = [...rubricItems].sort((a, b) => 
+                a.description.localeCompare(b.description)
+            );
+            
+            // Add rows for each rubric item
+            sortedItems.forEach((item) => {
+                // Find the original index for edit/delete operations
+                const originalIndex = rubricItems.findIndex(r => r.id === item.id);
+                const usageCount = usageCounts[item.id] || 0;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.description}</td>
+                    <td>${item.grade_impact}</td>
+                    <td>${usageCount}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary" onclick="editRubricItem(${originalIndex})" style="padding: 8px 15px; font-size: 14px; margin: 0 5px 0 0;">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteRubricItem(${originalIndex})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Handle rubric form submission
+        function handleRubricFormSubmit(e) {
+            e.preventDefault();
+            
+            const rubricData = {
+                id: editingRubricIndex >= 0 ? rubricItems[editingRubricIndex].id : generateRubricId(),
+                description: document.getElementById('rubricDescription').value.trim(),
+                grade_impact: parseFloat(document.getElementById('gradeImpact').value)
+            };
+            
+            if (editingRubricIndex >= 0) {
+                // Update existing rubric item
+                rubricItems[editingRubricIndex] = rubricData;
+                editingRubricIndex = -1;
+                document.getElementById('submitRubricBtn').textContent = 'Add Rubric Item';
+                document.getElementById('rubricFormTitle').textContent = 'Add/Edit Rubric Item';
+            } else {
+                // Add new rubric item
+                rubricItems.push(rubricData);
+            }
+            
+            // Sync table with updated data
+            syncRubricTableWithData();
+            
+            // Save to localStorage
+            saveRubricToLocalStorage();
+            
+            // Update rubric checkboxes in student form
+            populateRubricCheckboxes();
+            
+            // Refresh student table to show updated rubric items
+            syncTableWithData();
+            
+            // Reset form
+            document.getElementById('rubricForm').reset();
+            
+            // Log to console for verification
+            console.log('Current rubric items in memory:', rubricItems);
+            console.log('Student projects refreshed with updated rubric data');
+        }
+
+        // Edit rubric item
+        function editRubricItem(index) {
+            const item = rubricItems[index];
+            editingRubricIndex = index;
+            
+            // Populate form with rubric item data
+            document.getElementById('rubricDescription').value = item.description;
+            document.getElementById('gradeImpact').value = item.grade_impact;
+            
+            // Change button text and form title
+            document.getElementById('submitRubricBtn').textContent = 'Save Changes';
+            document.getElementById('rubricFormTitle').textContent = 'Edit Rubric Item';
+            
+            // Scroll to form
+            const rubricSection = document.querySelector('.form-section:has(#rubricForm)');
+            if (rubricSection) {
+                rubricSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Delete rubric item
+        function deleteRubricItem(index) {
+            if (confirm('Are you sure you want to delete this rubric item?')) {
+                const deletedId = rubricItems[index].id;
+                rubricItems.splice(index, 1);
+                
+                // Remove this rubric item from all students' appliedRubricItems
+                projects.forEach(project => {
+                    if (project.appliedRubricItems) {
+                        project.appliedRubricItems = project.appliedRubricItems.filter(id => id !== deletedId);
+                    }
+                });
+                
+                syncRubricTableWithData();
+                saveRubricToLocalStorage();
+                saveToLocalStorage(); // Save projects since we modified them
+                populateRubricCheckboxes(); // Update checkboxes
+                syncTableWithData(); // Refresh student table to show updated rubric items
+                console.log('Rubric item deleted. Remaining items:', rubricItems);
+                console.log('Student projects refreshed with updated rubric data');
+            }
+        }
+
+        // Clear all rubric items
+        function clearAllRubricItems() {
+            if (rubricItems.length === 0) {
+                alert('No rubric items to clear.');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to clear ALL rubric items? This action cannot be undone!')) {
+                if (confirm('This will permanently delete all ' + rubricItems.length + ' rubric item(s) and remove them from all students. Continue?')) {
+                    // Clear all rubric items
+                    rubricItems = [];
+                    
+                    // Remove all rubric items from all students
+                    projects.forEach(project => {
+                        if (project.appliedRubricItems) {
+                            project.appliedRubricItems = [];
+                        }
+                    });
+                    
+                    syncRubricTableWithData();
+                    syncTableWithData(); // Update student table to reflect changes
+                    saveRubricToLocalStorage();
+                    saveToLocalStorage(); // Save projects since we modified them
+                    populateRubricCheckboxes(); // Clear checkboxes
+                    alert('All rubric items have been cleared.');
+                    console.log('All rubric items cleared');
+                    console.log('Student projects refreshed with cleared rubric data');
+                }
+            }
+        }
+
+        // Reset rubric form
+        function resetRubricForm() {
+            document.getElementById('rubricForm').reset();
+            editingRubricIndex = -1;
+            document.getElementById('submitRubricBtn').textContent = 'Add Rubric Item';
+            document.getElementById('rubricFormTitle').textContent = 'Add/Edit Rubric Item';
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
+        }
+
+        // Sync table with the projects array
+        function syncTableWithData() {
+            const tableBody = document.getElementById('projectsTableBody');
+            
+            // Clear existing rows
+            tableBody.innerHTML = '';
+            
+            // If no projects, show empty state
+            if (projects.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">No projects added yet. Add your first project above!</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Add rows for each project
+            projects.forEach((project, index) => {
+                // Calculate grade: 100 - sum of rubric items
+                const appliedItems = (project.appliedRubricItems || [])
+                    .map(id => rubricItems.find(item => item.id === id))
+                    .filter(item => item !== undefined);
+                const rubricSum = appliedItems.reduce((sum, item) => sum + item.grade_impact, 0);
+                const calculatedGrade = 100 - rubricSum;
+                
+                // Get rubric items text
+                const rubricText = getRubricItemsText(project.appliedRubricItems || []);
+                
+                // Combine comments and rubric items
+                let combinedText = '';
+                if (project.comments) {
+                    combinedText = project.comments;
+                    if (rubricText !== '-') {
+                        combinedText += ' | ' + rubricText;
+                    }
+                } else {
+                    combinedText = rubricText;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${project.id}</td>
+                    <td>${project.studentName}</td>
+                    <td>${calculatedGrade}</td>
+                    <td>${combinedText}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary" onclick="editProject(${index})" style="padding: 8px 15px; font-size: 14px; margin: 0 5px 0 0;">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteProject(${index})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Populate rubric checkboxes in the form
+        function populateRubricCheckboxes(selectedRubricIds = []) {
+            const container = document.getElementById('rubricCheckboxContainer');
+            const checkboxSection = document.getElementById('rubricItemsCheckboxes');
+            
+            if (!container) return;
+            
+            // Clear existing checkboxes
+            container.innerHTML = '';
+            
+            // If no rubric items, hide the section
+            if (rubricItems.length === 0) {
+                checkboxSection.style.display = 'none';
+                return;
+            }
+            
+            // Show the section
+            checkboxSection.style.display = 'block';
+            
+            // Sort rubric items by description
+            const sortedItems = [...rubricItems].sort((a, b) => 
+                a.description.localeCompare(b.description)
+            );
+            
+            // Create checkbox for each rubric item
+            sortedItems.forEach(item => {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'rubric-checkbox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `rubric_${item.id}`;
+                checkbox.value = item.id;
+                checkbox.checked = selectedRubricIds.includes(item.id);
+                
+                const label = document.createElement('label');
+                label.setAttribute('for', `rubric_${item.id}`);
+                label.innerHTML = `${item.description} <span class="rubric-impact">(${item.grade_impact > 0 ? '-' : ''}${item.grade_impact})</span>`;
+                
+                checkboxItem.appendChild(checkbox);
+                checkboxItem.appendChild(label);
+                container.appendChild(checkboxItem);
+            });
+        }
+
+        // Get rubric items text for display in table
+        function getRubricItemsText(appliedRubricIds) {
+            if (!appliedRubricIds || appliedRubricIds.length === 0) {
+                return '-';
+            }
+            
+            // Get the rubric items that match the IDs
+            const appliedItems = appliedRubricIds
+                .map(id => rubricItems.find(item => item.id === id))
+                .filter(item => item !== undefined); // Remove items that no longer exist
+            
+            if (appliedItems.length === 0) {
+                return '-';
+            }
+            
+            // Format as: "Description (+X), Description (-Y), ..."
+            return appliedItems
+                .map(item => `${item.description} (${item.grade_impact > 0 ? '-' : ''}${item.grade_impact})`)
+                .join(', ');
+        }
+
+        // Get selected rubric item IDs from checkboxes
+        function getSelectedRubricItems() {
+            const container = document.getElementById('rubricCheckboxContainer');
+            if (!container) return [];
+            
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+            return Array.from(checkboxes).map(cb => parseInt(cb.value));
+        }
+
+        // Handle form submission
+        document.getElementById('projectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const projectData = {
+                id: editingIndex >= 0 ? projects[editingIndex].id : generateId(),
+                studentName: document.getElementById('studentName').value.trim(),
+                comments: document.getElementById('comments').value.trim(),
+                appliedRubricItems: getSelectedRubricItems()
+            };
+            
+            if (editingIndex >= 0) {
+                // Update existing project
+                projects[editingIndex] = projectData;
+                editingIndex = -1;
+                document.getElementById('submitBtn').textContent = 'Add Student';
+                document.getElementById('formTitle').textContent = 'Add/Edit Student';
+                document.getElementById('saveNextBtn').style.display = 'none';
+            } else {
+                // Add new project
+                projects.push(projectData);
+                // Sort projects by student name
+                projects.sort((a, b) => a.studentName.localeCompare(b.studentName));
+            }
+            
+            // Sync table with updated data
+            syncTableWithData();
+            
+            // Save to localStorage
+            saveToLocalStorage();
+            
+            // Reset form
+            this.reset();
+            populateRubricCheckboxes(); // Reset checkboxes
+            
+            // Log to console for verification
+            console.log('Current projects in memory:', projects);
+        });
+
+        // Edit project
+        function editProject(index) {
+            const project = projects[index];
+            editingIndex = index;
+            
+            // Populate form with project data
+            document.getElementById('studentName').value = project.studentName;
+            document.getElementById('comments').value = project.comments;
+            
+            // Populate rubric checkboxes with selected items
+            const selectedRubricIds = project.appliedRubricItems || [];
+            populateRubricCheckboxes(selectedRubricIds);
+            
+            // Change button text and form title
+            document.getElementById('submitBtn').textContent = 'Save Changes';
+            document.getElementById('formTitle').textContent = 'Edit Student';
+            
+            // Show "Save & Next" button
+            document.getElementById('saveNextBtn').style.display = 'inline-block';
+            
+            // Scroll to form
+            //document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Delete project
+        function deleteProject(index) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                projects.splice(index, 1);
+                syncTableWithData();
+                saveToLocalStorage();
+                console.log('Project deleted. Remaining projects:', projects);
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('projectForm').reset();
+            editingIndex = -1;
+            document.getElementById('submitBtn').textContent = 'Add Student';
+            document.getElementById('formTitle').textContent = 'Add/Edit Student';
+            document.getElementById('saveNextBtn').style.display = 'none';
+            populateRubricCheckboxes(); // Reset checkboxes
+        }
+
+        // Save current student and move to next
+        function saveAndNext() {
+            if (editingIndex < 0) return;
+            
+            // Save current student data
+            const projectData = {
+                id: projects[editingIndex].id,
+                studentName: document.getElementById('studentName').value.trim(),
+                comments: document.getElementById('comments').value.trim(),
+                appliedRubricItems: getSelectedRubricItems()
+            };
+            
+            projects[editingIndex] = projectData;
+            
+            // Sync table and save to localStorage
+            syncTableWithData();
+            saveToLocalStorage();
+            
+            // Move to next student
+            const nextIndex = editingIndex + 1;
+            
+            if (nextIndex < projects.length) {
+                // Edit the next student
+                editProject(nextIndex);
+            } else {
+                // No more students, reset form
+                alert('You have reached the last student.');
+                resetForm();
+            }
+        }
+
+        // Bulk import students
+        function bulkImportStudents() {
+            const studentIdsText = document.getElementById('studentIds').value.trim();
+            
+            if (!studentIdsText) {
+                alert('Please enter at least one student ID');
+                return;
+            }
+            
+            // Split by newlines and filter out empty lines
+            const studentIds = studentIdsText.split('\n')
+                .map(id => id.trim())
+                .filter(id => id.length > 0);
+            
+            if (studentIds.length === 0) {
+                alert('No valid student IDs found');
+                return;
+            }
+            
+            // Check for duplicates in the input
+            const uniqueIds = [...new Set(studentIds)];
+            if (uniqueIds.length !== studentIds.length) {
+                const duplicateCount = studentIds.length - uniqueIds.length;
+                if (!confirm(`Found ${duplicateCount} duplicate ID(s) in your input. Continue with unique IDs only?`)) {
+                    return;
+                }
+            }
+            
+            // Add projects for each student ID
+            let addedCount = 0;
+            let skippedCount = 0;
+            
+            uniqueIds.forEach(studentId => {
+                // Check if student already exists
+                const exists = projects.some(p => p.studentName === studentId);
+                
+                if (!exists) {
+                    const projectData = {
+                        id: generateId(),
+                        studentName: studentId,
+                        comments: '',
+                        appliedRubricItems: []
+                    };
+                    projects.push(projectData);
+                    addedCount++;
+                } else {
+                    skippedCount++;
+                }
+            });
+            
+            // Sort projects by student name
+            projects.sort((a, b) => a.studentName.localeCompare(b.studentName));
+            
+            // Sync table with updated data
+            syncTableWithData();
+            
+            // Save to localStorage
+            saveToLocalStorage();
+            
+            // Show results
+            let message = `Successfully imported ${addedCount} student(s).`;
+            if (skippedCount > 0) {
+                message += `\n${skippedCount} student(s) skipped (already exists).`;
+            }
+            alert(message);
+            
+            // Clear the bulk import form
+            clearBulkImport();
+            
+            console.log('Bulk import completed. Total projects:', projects.length);
+        }
+
+        // Clear bulk import form
+        function clearBulkImport() {
+            document.getElementById('studentIds').value = '';
+        }
+
+        // Initialize the page
+        window.addEventListener('DOMContentLoaded', function() {
+            // Load data from localStorage
+            const hasStoredData = loadFromLocalStorage();
+            const hasRubricData = loadRubricFromLocalStorage();
+            
+            if (!hasStoredData) {
+                // Uncomment the line below to start with sample data if no stored data
+                // initializeSampleData();
+                console.log('Starting with empty projects array');
+            }
+            
+            if (!hasRubricData) {
+                console.log('Starting with empty rubric items array');
+            }
+            
+            // Sync tables with loaded or empty data
+            syncTableWithData();
+            syncRubricTableWithData();
+            
+            // Populate rubric checkboxes initially
+            populateRubricCheckboxes();
+            
+            // Set up rubric form event listener
+            const rubricForm = document.getElementById('rubricForm');
+            if (rubricForm) {
+                rubricForm.addEventListener('submit', handleRubricFormSubmit);
+            }
+            
+            console.log('Project Grader initialized. Projects:', projects.length, 'Rubric Items:', rubricItems.length);
+        });
+    </script>
+</body>
+</html>
